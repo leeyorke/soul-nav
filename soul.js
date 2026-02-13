@@ -143,14 +143,22 @@ class SoulQuotes {
     if (this.quotes.length === 0) {
       return "点击加载 Soul 语录...";
     }
-    
+
     let newIndex;
     do {
       newIndex = Math.floor(Math.random() * this.quotes.length);
     } while (newIndex === this.currentIndex && this.quotes.length > 1);
-    
+
     this.currentIndex = newIndex;
     return this.quotes[newIndex];
+  }
+
+  getNextQuote() {
+    if (this.quotes.length === 0) {
+      return "点击加载 Soul 语录...";
+    }
+    this.currentIndex = (this.currentIndex + 1) % this.quotes.length;
+    return this.quotes[this.currentIndex];
   }
 
   get count() {
@@ -168,4 +176,9 @@ class SoulQuotes {
 // 兼容模块导出
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = SoulQuotes;
+}
+
+// 浏览器环境：暴露到全局作用域
+if (typeof window !== 'undefined') {
+  window.SoulQuotes = SoulQuotes;
 }
