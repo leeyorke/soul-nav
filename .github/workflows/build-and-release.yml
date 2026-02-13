@@ -1,35 +1,31 @@
 name: Build and Release
-
 on:
   push:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
       - name: Install dependencies
         run: npm install
-
       - name: Build project
         run: npm run build
-
       - name: Get version from manifest.json
         id: get_version
         run: |
           VERSION=$(jq -r '.version' manifest.json)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
       - name: Check if release exists
         id: check_release
         run: |
@@ -39,14 +35,12 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-
       - name: Create ZIP archive
         if: steps.check_release.outputs.exists == 'false'
         run: |
           cd dist
           zip -r -q ../soul-nav-${{ steps.get_version.outputs.version }}.zip .
           cd ..
-
       - name: Create Release
         if: steps.check_release.outputs.exists == 'false'
         uses: ncipollo/release-action@v1
