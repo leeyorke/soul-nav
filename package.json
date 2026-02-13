@@ -1,0 +1,11 @@
+{
+  "name": "soul-nav",
+  "version": "1.0.0",
+  "description": "极简浏览器导航页，随机展示 SOUL 语录",
+  "scripts": {
+    "dev": "npx extension@latest dev",
+    "build": "npx extension@latest build"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

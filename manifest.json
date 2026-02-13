@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Soul Nav - 极简导航",
+  "version": "1.0.0",
+  "description": "极简浏览器新标签页，随机展示 SOUL 语录",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": [],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
