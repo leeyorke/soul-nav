@@ -7,29 +7,82 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 背景层 -->
+  <div class="bg-layer" id="bg-layer"></div>
+
+  <!-- 设置按钮 -->
+  <button class="settings-btn" id="settings-btn" title="设置">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <!-- 设置面板 -->
+  <div class="settings-panel" id="settings-panel">
+    <div class="settings-header">
+      <h3>设置</h3>
+      <button class="close-btn" id="close-settings">&times;</button>
+    </div>
+
+    <div class="settings-section">
+      <h4>导入 Soul 语录</h4>
+      <p class="hint">选择你的 soul.md 文件</p>
+      <input type="file" id="soul-file-input" accept=".md,.txt,.json">
+      <button class="btn" id="load-soul-btn">加载语录文件</button>
+      <p class="status" id="soul-status"></p>
+    </div>
+
+    <div class="settings-section">
+      <h4>自定义背景</h4>
+      <p class="hint">选择背景图片</p>
+      <input type="file" id="bg-file-input" accept="image/*">
+      <button class="btn" id="load-bg-btn">设置背景</button>
+      <button class="btn btn-secondary" id="clear-bg-btn">清除背景</button>
+      <p class="status" id="bg-status"></p>
+    </div>
+
+    <div class="settings-section">
+      <h4>自定义导航链接</h4>
+      <p class="hint">添加常用网站链接</p>
+      <div class="nav-inputs">
+        <input type="text" id="nav-name" placeholder="名称 (如: GitHub)">
+        <input type="text" id="nav-url" placeholder="网址 (如: https://github.com)">
+      </div>
+      <button class="btn" id="add-nav-btn">添加链接</button>
+      <div class="nav-list" id="nav-list"></div>
+    </div>
+  </div>
+
   <div class="container">
     <div class="time-section">
-      <div class="time" id="time">--:--</div>
+      <div class="time" id="time">00:00</div>
       <div class="date" id="date">----/--/--</div>
     </div>
-    
+
+    <!-- 自定义导航 -->
+    <div class="nav-section" id="nav-section">
+      <div class="nav-grid" id="nav-grid"></div>
+    </div>
+
     <div class="search-section">
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
         </svg>
         <input type="text" id="search-input" placeholder="搜索或输入网址..." autofocus>
       </div>
     </div>
-    
+
     <div class="soul-section">
       <div class="soul-quote" id="soul-quote">
-        <p class="quote-text">"成为你自己"</p>
+        <p class="quote-text">点击加载 Soul 语录...</p>
       </div>
+      <button class="load-soul-btn" id="load-soul-inline">加载语录文件</button>
     </div>
   </div>
-  
+
   <script src="soul.js"></script>
   <script src="newtab.js"></script>
 </body>

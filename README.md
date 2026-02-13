@@ -29,19 +29,8 @@ npm run build
 
 ## 自定义语录
 
-### 方式一：JSON 文件
-
-创建 `soul.json` 文件：
-
-```json
-[
-  "你的语录1",
-  "你的语录2",
-  "你的语录3"
-]
-```
-
-### 方式二：Markdown 文件
+soul.md作为你的灵魂文件，标志着你对自己的要求，想成为什么样的人。
+插件会随机展示一条语录用来提醒你，时刻不要忘记你的灵魂！
 
 创建 `soul.md` 文件：
 
@@ -54,10 +43,6 @@ npm run build
 
 纯文本语录也可以
 ```
-
-### 方式三：使用扩展存储
-
-语录会自动保存到浏览器 localStorage，刷新页面后会保留。
 
 ## 键盘快捷键
 
@@ -73,23 +58,6 @@ npm run build
 - 纯原生 JavaScript (ES6+)
 - CSS3 (渐变、动画、毛玻璃效果)
 - Chrome Extension Manifest V3
-
-## 文件结构
-
-```
-soul-nav/
-├── manifest.json      # 扩展配置
-├── newtab.html        # 新标签页 HTML
-├── newtab.js          # 主逻辑脚本
-├── soul.js            # 语录管理模块
-├── soul.json          # 默认语录数据
-├── style.css          # 样式表
-├── icons/             # 图标
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── README.md          # 说明文档
-```
 
 ## 许可证
 
