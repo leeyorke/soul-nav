@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     navGridEl.innerHTML = navLinks.map((link, index) => {
       const domain = new URL(link.url).hostname;
       return `
-      <a href="${link.url}" class="nav-item" title="${link.name}" data-index="${index}">
+      <a href="${link.url}" class="nav-item" title="${link.name}" data-index="${index}" target="_blank" rel="noopener noreferrer">
         <img class="favicon" src="https://favicon.im/${domain}" alt="" loading="lazy">
         <span>${link.name}</span>
       </a>
