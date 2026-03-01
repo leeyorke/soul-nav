@@ -92,17 +92,17 @@ class SoulQuotes {
           trimmed.startsWith('#') || 
           trimmed.startsWith('<!--') || 
           trimmed.startsWith('//')) {
-        if (currentQuote.length > 5) {
+        if (currentQuote.length > 0) {
           quotes.push(currentQuote.trim());
         }
         currentQuote = '';
         continue;
       }
-      
+
       // 解析列表项或纯文本
       let text = trimmed;
       if (text.startsWith('- ') || text.startsWith('* ')) {
-        if (currentQuote.length > 5) {
+        if (currentQuote.length > 0) {
           quotes.push(currentQuote.trim());
         }
         currentQuote = text.substring(2);
@@ -114,11 +114,11 @@ class SoulQuotes {
       }
     }
     
-    if (currentQuote.length > 5) {
+    if (currentQuote.length > 0) {
       quotes.push(currentQuote.trim());
     }
-    
-    return quotes.filter(q => q.length > 3);
+
+    return quotes.filter(q => q.length > 0);
   }
 
   loadFromStorage() {
