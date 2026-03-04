@@ -32,6 +32,8 @@ The build output goes to `dist/` directory, which contains browser-specific subd
 - `soul.js` - `SoulQuotes` class: quote loading, parsing, storage management
 - `style.css` - All styles including dark theme and animations
 - `icons/` - Extension icons (16px, 48px, 128px)
+- `apps/` - Extension apps (e.g. `habit-tracker.html`, `habit-tracker.js`)
+- `apps/` - Extension apps (e.g. `habit-tracker.html`)
 
 ### Key Components
 
@@ -45,6 +47,7 @@ The build output goes to `dist/` directory, which contains browser-specific subd
 - Search bar with URL detection and Bing search fallback
 - Settings panel for: loading custom quotes (soul.md/JSON), custom background image, custom navigation links
 - Keyboard shortcuts: Enter (search), Esc (clear search/close settings), Space (next quote), click quote (next quote)
+- App Launcher: quick access to extension apps (habit-tracker, etc.)
 
 **Data Storage**
 - All user customizations stored in browser localStorage:

@@ -995,3 +995,139 @@ input[type="text"]:focus {
     padding: 16px 20px;
   }
 }
+
+/* 应用启动器 */
+.app-launcher {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 100;
+}
+
+.app-launcher-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--search-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.app-launcher-btn:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(88, 166, 255, 0.35);
+}
+
+.app-launcher-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.app-launcher-menu {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  min-width: 160px;
+  background: var(--search-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.app-launcher:hover .app-launcher-menu,
+.app-launcher-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.app-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+
+.app-item:hover {
+  background: rgba(88, 166, 255, 0.15);
+}
+
+.app-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.app-item span {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* 浅色主题下的应用启动器 */
+[data-theme="light"] .app-launcher-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #555;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .app-launcher-btn:hover {
+  background: #0066cc;
+  border-color: #0066cc;
+  color: #fff;
+}
+
+[data-theme="light"] .app-launcher-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .app-item {
+  color: #333;
+}
+
+[data-theme="light"] .app-item:hover {
+  background: rgba(10, 132, 255, 0.1);
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .app-launcher {
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .app-launcher-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .app-launcher-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}

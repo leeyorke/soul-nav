@@ -4,7 +4,7 @@
   "description": "极简浏览器导航页，随机展示 SOUL 语录",
   "scripts": {
     "dev": "npx extension@latest dev",
-    "build": "npx extension@latest build"
+    "build": "node build.js"
   },
   "dependencies": {},
   "devDependencies": {}

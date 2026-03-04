@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>习惯追踪</title>
+    <link rel="icon" href="../icons/habit.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:            #F9F8F4;
+            --surface:       #FFFFFF;
+            --surface2:      #F4F6F1;
+            --accent:        #7D8C6D;
+            --accent-light:  #E6EAE3;
+            --accent-mid:    #C5CEBC;
+            --accent-dark:   #2F3629;
+            /* lighter done/check color */
+            --done-bg:       #A3B393;
+            --done-border:   #A3B393;
+            /* lighter calendar */
+            --cal-full:      #A3B393;
+            --cal-part:      #DCE4D8;
+            --warm:          #B89A72;
+            --warm-light:    #F0E9DC;
+            --text:          #3E4238;
+            --text-2:        #8A9284;
+            --text-3:        #B0B8AA;
+            --border-solid:  #DCE1D9;
+            --shadow:        0 4px 24px rgba(47,54,41,0.06);
+            --shadow-md:     0 10px 40px -10px rgba(47,54,41,0.12);
+            --r: 20px; --r-sm: 12px; --r-pill: 999px;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 10% 20%, rgba(220,225,210,0.35) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(125,140,109,0.12) 0%, transparent 40%);
+            color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
+            min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 32px 16px;
+        }
+        .app { width: 1440px; display: grid; grid-template-columns: 300px 1fr 360px; gap: 24px; align-items: start; }
+
+        /* LEFT */
+        .left { background: var(--surface); border-radius: var(--r); padding: 36px 28px; box-shadow: var(--shadow); position: sticky; top: 32px; }
+        .panel-logo { font-family: var(--font-serif); font-size: 22px; color: var(--accent-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 24px; height: 24px; flex-shrink: 0; }
+        .panel-sub { font-size: 10px; color: var(--text-3); margin-bottom: 32px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; padding-left: 18px; }
+        .form-section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); font-weight: 500; margin-bottom: 12px; }
+
+        /* freq — text only, no icons */
+        .freq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+        .freq-btn { padding: 11px 8px; border-radius: var(--r-sm); border: 1px solid var(--border-solid); background: var(--surface2); font-family: var(--font-sans); font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--text-2); letter-spacing: 0.02em; }
+        .freq-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent-dark); font-weight: 600; }
+
+        .field { margin-bottom: 18px; }
+        .field label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); font-weight: 500; margin-bottom: 6px; }
+        .field input, .field select { width: 100%; padding: 13px 14px; background: var(--surface2); border: 1px solid var(--border-solid); border-radius: var(--r-sm); font-family: var(--font-sans); font-size: 14px; color: var(--text); transition: border-color 0.2s; outline: none; }
+        .field input:focus, .field select:focus { border-color: var(--accent); background: #fff; }
+        .interval-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .hidden { display: none !important; }
+        .weekday-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+        .wd-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-solid); background: var(--surface2); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text-2); font-family: var(--font-sans); }
+        .wd-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+        .btn-add { width: 100%; padding: 16px; background: var(--accent-dark); color: white; border: none; border-radius: var(--r-pill); font-family: var(--font-sans); font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 8px; letter-spacing: 0.04em; transition: transform 0.2s, background 0.2s, box-shadow 0.2s; }
+        .btn-add:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 14px 24px rgba(47,54,41,0.18); }
+        .divider { height: 1px; background: var(--border-solid); margin: 28px 0; }
+        .quick-btn { background: none; border: 1px dashed var(--border-solid); border-radius: var(--r-sm); padding: 10px 14px; text-align: left; cursor: pointer; font-size: 12px; color: var(--text-3); font-family: var(--font-sans); transition: border-color 0.2s, color 0.2s; display: block; width: 100%; margin-bottom: 8px; }
+        .quick-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+
+        /* CENTER */
+        .center { display: flex; flex-direction: column; gap: 16px; }
+        .date-bar { background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); border-radius: var(--r); padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.9); }
+        .date-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); font-weight: 500; margin-bottom: 8px; }
+        .date-main { font-family: var(--font-serif); font-size: 26px; color: var(--accent-dark); }
+        .overall-pill { padding: 8px 18px; background: var(--surface); color: var(--accent-dark); border-radius: var(--r-pill); font-weight: 600; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+        /* tabs — text only, no icons */
+        .tab-bar { display: flex; gap: 6px; background: rgba(255,255,255,0.5); backdrop-filter: blur(12px); border-radius: var(--r); padding: 6px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.8); }
+        .tab { flex: 1; padding: 11px 8px; border-radius: var(--r-sm); border: none; background: transparent; font-family: var(--font-sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.25s; color: var(--text-2); letter-spacing: 0.02em; }
+        .tab.active { background: var(--accent-dark); color: white; font-weight: 600; box-shadow: 0 4px 12px rgba(47,54,41,0.2); }
+
+        .tab-panel { display: none; flex-direction: column; gap: 24px; }
+        .tab-panel.active { display: flex; }
+        .habit-section { display: flex; flex-direction: column; gap: 10px; }
+
+        .habit-card { background: var(--surface); border-radius: var(--r); padding: 20px 24px; display: flex; align-items: center; gap: 18px; box-shadow: var(--shadow); border: 1px solid rgba(62,66,56,0.07); transition: all 0.25s; }
+        .habit-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .habit-card.completed { background: var(--surface2); }
+
+        .check-btn { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--border-solid); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); color: transparent; }
+        /* lighter done */
+        .check-btn.done { background: var(--done-bg); border-color: var(--done-border); color: white; }
+        .check-btn:hover:not(.done) { border-color: var(--accent); background: var(--accent-light); transform: scale(1.08); }
+
+        .habit-info { flex: 1; }
+        .habit-name { font-family: var(--font-serif); font-size: 16px; font-style: italic; color: var(--accent-dark); font-weight: 400; margin-bottom: 3px; }
+        .habit-meta { font-size: 11px; color: var(--text-3); letter-spacing: 0.02em; }
+        .habit-streak { font-size: 12px; color: var(--accent); font-weight: 500; margin-top: 4px; }
+
+        .week-dots { display: flex; gap: 5px; margin-top: 8px; }
+        .wdot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-solid); }
+        .wdot.filled { background: var(--accent-mid); }
+        .wdot.today { background: var(--accent); outline: 2px solid var(--accent-light); outline-offset: 1px; }
+
+        .week-progress { margin-top: 9px; background: var(--border-solid); border-radius: var(--r-pill); height: 4px; overflow: hidden; }
+        .week-progress-fill { height: 100%; border-radius: var(--r-pill); transition: width 0.4s ease; }
+
+        .habit-badge { padding: 4px 12px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; flex-shrink: 0; }
+        .badge-due   { background: var(--accent-light); color: var(--accent-dark); }
+        .badge-done  { background: #E8EDE4; color: #4A5E3A; }
+        .badge-later { background: var(--surface2); color: var(--text-3); }
+
+        .yearly-card { background: var(--surface); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow); }
+        .yearly-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+        .yearly-months { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; }
+        .month-dot { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--text-3); background: var(--surface2); border: 1px solid var(--border-solid); cursor: pointer; transition: all 0.2s; }
+        .month-dot.done { background: var(--done-bg); color: white; border-color: var(--done-bg); }
+        .month-dot.current { border: 2px solid var(--accent); color: var(--accent-dark); font-weight: 700; }
+
+        .empty-state { text-align: center; padding: 48px 24px; color: var(--text-3); }
+        .empty-icon { font-size: 24px; margin-bottom: 12px; letter-spacing: 0.1em; }
+        .empty-text { font-size: 13px; }
+
+        /* RIGHT */
+        .right { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 32px; }
+        .r-card { background: var(--surface); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow); }
+        .r-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); font-weight: 500; margin-bottom: 18px; }
+
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .cal-month { font-family: var(--font-serif); font-size: 17px; color: var(--accent-dark); font-style: italic; }
+        .cal-arrow { background: none; border: none; color: var(--text-3); font-size: 18px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; font-family: var(--font-sans); }
+        .cal-arrow:hover { background: var(--accent-light); color: var(--accent-dark); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; text-align: center; }
+        .cal-wd { font-size: 10px; font-weight: 500; color: var(--text-3); padding-bottom: 6px; letter-spacing: 0.08em; }
+        .cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-2); transition: all 0.15s; }
+        /* lighter calendar */
+        .cal-day.full    { background: var(--cal-full); color: white; font-weight: 600; }
+        .cal-day.partial { background: var(--cal-part); color: var(--accent-dark); font-weight: 500; }
+        .cal-day.today   { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .cal-day.grey    { color: var(--text-3); opacity: 0.35; }
+        .cal-day.future  { color: var(--text-3); }
+
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-box { border-radius: var(--r-sm); padding: 18px; text-align: center; }
+        .stat-box.a { background: var(--accent-light); }
+        .stat-box.b { background: #E8EDE4; }
+        .stat-box.c { background: var(--warm-light); }
+        .stat-box.d { background: #EEF0EC; }
+        .stat-val { font-family: var(--font-serif); font-size: 30px; margin-bottom: 4px; }
+        .stat-box.a .stat-val { color: var(--accent-dark); }
+        .stat-box.b .stat-val { color: #4A5E3A; }
+        .stat-box.c .stat-val { color: var(--warm); }
+        .stat-box.d .stat-val { color: var(--text-2); }
+        .stat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 500; }
+
+        .upcoming-list { display: flex; flex-direction: column; gap: 8px; }
+        .upcoming-item { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: var(--r-sm); background: var(--surface2); border: 1px solid var(--border-solid); }
+        .up-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .up-name { font-size: 13px; font-weight: 500; flex: 1; color: var(--accent-dark); }
+        .up-when { font-size: 11px; color: var(--text-3); }
+
+        .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent-dark); color: white; padding: 11px 24px; border-radius: var(--r-pill); font-size: 13px; font-weight: 500; z-index: 999; transition: transform 0.35s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; letter-spacing: 0.02em; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <aside class="left">
+        <div class="panel-logo"><img class="logo-icon" src="../icons/habit.svg" alt="">习惯追踪</div>
+        <div class="panel-sub">Habit Tracker · 积累每一天</div>
+
+        <div class="form-section-label">习惯频率</div>
+        <div class="freq-grid" id="freq-grid">
+            <button class="freq-btn active" data-freq="daily">每日</button>
+            <button class="freq-btn" data-freq="weekly">每周</button>
+            <button class="freq-btn" data-freq="interval">间隔</button>
+            <button class="freq-btn" data-freq="yearly">每年</button>
+        </div>
+
+        <div class="field">
+            <label>习惯名称</label>
+            <input type="text" id="f-name" placeholder="例：每天喝 8 杯水">
+        </div>
+        <div class="field" id="f-time-wrap">
+            <label>打卡时间（可选）</label>
+            <input type="time" id="f-time">
+        </div>
+        <div class="field hidden" id="f-days-wrap">
+            <label>选择星期</label>
+            <div class="weekday-picker" id="f-days">
+                <button class="wd-btn" data-d="1">一</button><button class="wd-btn" data-d="2">二</button>
+                <button class="wd-btn" data-d="3">三</button><button class="wd-btn" data-d="4">四</button>
+                <button class="wd-btn" data-d="5">五</button><button class="wd-btn" data-d="6">六</button>
+                <button class="wd-btn" data-d="0">日</button>
+            </div>
+        </div>
+        <div class="hidden" id="f-interval-wrap">
+            <div class="field">
+                <label>间隔天数</label>
+                <div class="interval-row">
+                    <input type="number" id="f-interval" value="2" min="1">
+                    <select id="f-interval-unit"><option value="day">天</option><option value="week">周</option></select>
+                </div>
+            </div>
+            <div class="field">
+                <label>上次完成日期</label>
+                <input type="date" id="f-last-done">
+            </div>
+        </div>
+        <div class="field hidden" id="f-month-wrap">
+            <label>目标月份（可选）</label>
+            <select id="f-month">
+                <option value="">不限</option>
+                <option value="1">1 月</option><option value="2">2 月</option><option value="3">3 月</option>
+                <option value="4">4 月</option><option value="5">5 月</option><option value="6">6 月</option>
+                <option value="7">7 月</option><option value="8">8 月</option><option value="9">9 月</option>
+                <option value="10">10 月</option><option value="11">11 月</option><option value="12">12 月</option>
+            </select>
+        </div>
+        <button class="btn-add" id="btn-add">＋ 添加习惯</button>
+
+        <div class="divider"></div>
+        <div class="form-section-label">快速添加</div>
+        <div style="margin-top:4px;" id="quick-add-btns">
+            <button class="quick-btn" data-name="每天喝8杯水" data-freq="daily" data-interval="">每天喝 8 杯水</button>
+            <button class="quick-btn" data-name="隔天做面膜" data-freq="interval" data-interval="2">隔天做面膜</button>
+            <button class="quick-btn" data-name="年度总结" data-freq="yearly" data-interval="">年度总结</button>
+        </div>
+    </aside>
+
+    <main class="center">
+        <div class="date-bar">
+            <div>
+                <div class="date-label">Today</div>
+                <div class="date-main" id="date-main"></div>
+            </div>
+            <div class="overall-pill"><div class="status-dot"></div><span id="overall-text">今日 0%</span></div>
+        </div>
+        <div class="tab-bar" id="tab-bar">
+            <button class="tab active" data-tab="daily">每日</button>
+            <button class="tab" data-tab="weekly">每周</button>
+            <button class="tab" data-tab="interval">间隔</button>
+            <button class="tab" data-tab="yearly">每年</button>
+        </div>
+        <div class="tab-panel active" id="panel-daily">
+            <div class="habit-section" id="list-daily"><div class="empty-state"><div class="empty-icon">· · ·</div><div class="empty-text">还没有每日习惯，去左边添加一个吧</div></div></div>
+        </div>
+        <div class="tab-panel" id="panel-weekly">
+            <div class="habit-section" id="list-weekly"><div class="empty-state"><div class="empty-icon">· · ·</div><div class="empty-text">还没有每周习惯</div></div></div>
+        </div>
+        <div class="tab-panel" id="panel-interval">
+            <div class="habit-section" id="list-interval"><div class="empty-state"><div class="empty-icon">· · ·</div><div class="empty-text">还没有间隔习惯</div></div></div>
+        </div>
+        <div class="tab-panel" id="panel-yearly">
+            <div class="habit-section" id="list-yearly"><div class="empty-state"><div class="empty-icon">· · ·</div><div class="empty-text">还没有年度习惯</div></div></div>
+        </div>
+    </main>
+
+    <aside class="right">
+        <div class="r-card">
+            <div class="cal-nav">
+                <span class="cal-month" id="cal-month-label"></span>
+                <div id="cal-arrows"><button class="cal-arrow" data-dir="-1">‹</button><button class="cal-arrow" data-dir="1">›</button></div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="r-card">
+            <div class="r-title">Streak Overview</div>
+            <div class="stats-row">
+                <div class="stat-box a"><div class="stat-val" id="s-streak">0</div><div class="stat-lbl">最长连续</div></div>
+                <div class="stat-box b"><div class="stat-val" id="s-rate">0%</div><div class="stat-lbl">本月完成率</div></div>
+                <div class="stat-box c"><div class="stat-val" id="s-total">0</div><div class="stat-lbl">习惯总数</div></div>
+                <div class="stat-box d"><div class="stat-val" id="s-today">0</div><div class="stat-lbl">今日已完成</div></div>
+            </div>
+        </div>
+        <div class="r-card">
+            <div class="r-title">即将到期</div>
+            <div class="upcoming-list" id="upcoming-list">
+                <div style="color:var(--text-3);font-size:12px;text-align:center;padding:10px;letter-spacing:0.04em;">全部都在掌控中 ✓</div>
+            </div>
+        </div>
+    </aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="habit-tracker.js"></script>
+</body>
+</html>

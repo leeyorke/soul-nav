@@ -473,5 +473,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // ===== 应用启动器交互 =====
+  const appLauncherBtn = document.getElementById('app-launcher-btn');
+  const appLauncherMenu = document.getElementById('app-launcher-menu');
+
+  if (appLauncherBtn && appLauncherMenu) {
+    // 点击按钮切换菜单显示
+    appLauncherBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      appLauncherMenu.classList.toggle('active');
+    });
+
+    // 点击其他地方关闭菜单
+    document.addEventListener('click', (e) => {
+      if (!appLauncherMenu.contains(e.target) && e.target !== appLauncherBtn) {
+        appLauncherMenu.classList.remove('active');
+      }
+    });
+
+    // 按下 Escape 键关闭菜单
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        appLauncherMenu.classList.remove('active');
+      }
+    });
+  }
+
   console.log('[SoulNav] 初始化完成');
 });
