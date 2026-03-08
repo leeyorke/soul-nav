@@ -1,0 +1,16 @@
+/* llmchat/styles.css - 聊天界面样式 */
+
+/* 占位符样式，完整样式会在后续完善 */
+#app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}

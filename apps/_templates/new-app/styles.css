@@ -1,0 +1,15 @@
+/* styles.css - 新 APP 模板样式 */
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}

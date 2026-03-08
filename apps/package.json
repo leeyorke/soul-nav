@@ -1,0 +1,19 @@
+{
+  "name": "soul-nav-apps",
+  "version": "1.0.0",
+  "description": "Soul Nav apps shared dependencies",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "dexie": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "dompurify": "^3.0.0",
+    "marked": "^12.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "echo 'Use extension dev server from root'",
+    "build": "echo 'Build from root'"
+  }
+}

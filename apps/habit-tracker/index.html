@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>习惯追踪</title>
+  <link rel="icon" href="../../icons/icon48.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_shared/styles.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <!-- 复制原始 habit-tracker.html 的 body 内容 -->
+  <div class="app">
+    
+    <!-- LEFT PANEL -->
+    <div class="left">
+      <div class="panel-logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Habit Tracker
+      </div>
+      <div class="panel-sub">SOUL NAV · HABITS</div>
+
+      <div class="form-section-label">新建习惯</div>
+      
+      <div class="freq-grid" id="freq-grid">
+        <button class="freq-btn active" data-freq="daily">每日</button>
+        <button class="freq-btn" data-freq="weekly">每周</button>
+        <button class="freq-btn" data-freq="interval">间隔</button>
+        <button class="freq-btn" data-freq="yearly">年度</button>
+      </div>
+
+      <div class="field">
+        <label>名称</label>
+        <input type="text" id="f-name" placeholder="例如：每天喝8杯水" autocomplete="off">
+      </div>
+
+      <div class="field" id="f-time-wrap">
+        <label>提醒时间（可选）</label>
+        <input type="time" id="f-time">
+      </div>
+
+      <div class="field hidden" id="f-days-wrap">
+        <label>重复日期</label>
+        <div class="weekday-picker" id="f-days">
+          <button class="wd-btn" data-d="1">一</button>
+          <button class="wd-btn" data-d="2">二</button>
+          <button class="wd-btn" data-d="3">三</button>
+          <button class="wd-btn" data-d="4">四</button>
+          <button class="wd-btn" data-d="5">五</button>
+          <button class="wd-btn" data-d="6">六</button>
+          <button class="wd-btn" data-d="0">日</button>
+        </div>
+      </div>
+
+      <div class="field hidden" id="f-interval-wrap">
+        <label>间隔</label>
+        <div class="interval-row">
+          <div class="field" style="margin:0;">
+            <input type="number" id="f-interval" value="2" min="1">
+          </div>
+          <div class="field" style="margin:0;">
+            <select id="f-interval-unit">
+              <option value="day">天</option>
+              <option value="week">周</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px;">
+          <label>上次完成（可选）</label>
+          <input type="date" id="f-last-done">
+        </div>
+      </div>
+
+      <div class="field hidden" id="f-month-wrap">
+        <label>目标月份（可选）</label>
+        <select id="f-month">
+          <option value="">全年</option>
+          <option value="1">1月</option>
+          <option value="2">2月</option>
+          <option value="3">3月</option>
+          <option value="4">4月</option>
+          <option value="5">5月</option>
+          <option value="6">6月</option>
+          <option value="7">7月</option>
+          <option value="8">8月</option>
+          <option value="9">9月</option>
+          <option value="10">10月</option>
+          <option value="11">11月</option>
+          <option value="12">12月</option>
+        </select>
+      </div>
+
+      <button class="btn-add" id="btn-add">添加习惯</button>
+
+      <div class="divider"></div>
+
+      <div class="form-section-label">快速添加</div>
+      <button class="quick-btn" data-name="每天喝8杯水" data-freq="daily">💧 每天喝8杯水</button>
+      <button class="quick-btn" data-name="阅读30分钟" data-freq="daily">📚 阅读30分钟</button>
+      <button class="quick-btn" data-name="洗床单" data-freq="weekly">🛏️ 洗床单</button>
+    </div>
+
+    <!-- CENTER PANEL -->
+    <div class="center">
+      <div class="date-bar">
+        <div>
+          <div class="date-label">TODAY</div>
+          <div class="date-main" id="date-main">--月--日</div>
+        </div>
+        <div class="overall-pill">
+          <div class="status-dot"></div>
+          <div id="overall-text">今日 0%</div>
+        </div>
+      </div>
+
+      <div class="tab-bar" id="tab-bar">
+        <button class="tab active" data-tab="daily">每日</button>
+        <button class="tab" data-tab="weekly">每周</button>
+        <button class="tab" data-tab="interval">间隔</button>
+        <button class="tab" data-tab="yearly">年度</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-daily">
+        <div class="habit-section" id="list-daily"></div>
+      </div>
+
+      <div class="tab-panel" id="panel-weekly">
+        <div class="habit-section" id="list-weekly"></div>
+      </div>
+
+      <div class="tab-panel" id="panel-interval">
+        <div class="habit-section" id="list-interval"></div>
+      </div>
+
+      <div class="tab-panel" id="panel-yearly">
+        <div class="habit-section" id="list-yearly"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right">
+      <div class="right-top">
+        <div class="panel-logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Calendar
+        </div>
+        <div class="cal-nav" id="cal-arrows">
+          <button class="cal-arrow" data-dir="-1">◀</button>
+          <div class="cal-label" id="cal-month-label">----年--月</div>
+          <button class="cal-arrow" data-dir="1">▶</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">今日完成</div>
+          <div class="stat-value" id="s-today">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">最长连续</div>
+          <div class="stat-value" id="s-streak">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">总习惯</div>
+          <div class="stat-value" id="s-total">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">本月完成率</div>
+          <div class="stat-value" id="s-rate">0%</div>
+        </div>
+      </div>
+
+      <div class="upcoming-section">
+        <div class="panel-logo" style="margin-bottom:12px;">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12,6 12,12 16,14"></polyline>
+          </svg>
+          今日待做
+        </div>
+        <div id="upcoming-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Chat</title>
+  <link rel="icon" href="../../icons/icon48.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- 加载原版样式（兼容） -->
+  <style>
+    /* 极简版样式，完整版本使用 ../llmchat.html */
+    :root {
+      --bg: #E8E5E1;
+      --surface: #FAFAF8;
+      --text: #1C1A18;
+      --text-2: #6B6762;
+      --accent: #2D5BE3;
+      --border: rgba(0,0,0,0.07);
+      --shadow: 0 8px 32px rgba(0,0,0,0.12);
+      --font-display: 'Lora', Georgia, serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --r: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .app {
+      text-align: center;
+      max-width: 500px;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    p {
+      color: var(--text-2);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn {
+      padding: 12px 20px;
+      border-radius: var(--r);
+      border: none;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>LLM Chat</h1>
+    <p>模块化重构完成！核心模块已创建。</p>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="location.href='../llmchat.html'">
+        使用原版界面
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
