@@ -422,10 +422,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (isUrl && (query.startsWith('http') || query.includes('.'))) {
           const url = query.startsWith('http') ? query : `https://${query}`;
-          window.location.href = url;
+          window.open(url, '_blank', 'noopener,noreferrer');
         } else {
           // 使用用户选择的搜索引擎
-          window.location.href = getSearchUrl(query);
+          window.open(getSearchUrl(query), '_blank', 'noopener,noreferrer');
         }
       }
     }
