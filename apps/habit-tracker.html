@@ -166,6 +166,10 @@
 
         .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent-dark); color: white; padding: 11px 24px; border-radius: var(--r-pill); font-size: 13px; font-weight: 500; z-index: 999; transition: transform 0.35s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; letter-spacing: 0.02em; }
         .toast.show { transform: translateX(-50%) translateY(0); }
+
+        .delete-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+        .delete-btn:hover { background: #FEE; color: #E54; }
+        .delete-btn svg { width: 18px; height: 18px; }
     </style>
 </head>
 <body>

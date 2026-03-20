@@ -1,7 +1,13 @@
 // Soul Nav - 新标签页主脚本
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // DOM 元素
+  // ===== 常量声明 =====
+  const BG_KEY = 'soul-nav-bg';
+  const NAV_KEY = 'soul-nav-links';
+  const SEARCH_ENGINE_KEY = 'soul-nav-search-engine';
+  const THEME_KEY = 'soul-nav-theme';
+
+  // ===== DOM 元素 =====
   const timeEl = document.getElementById('time');
   const dateEl = document.getElementById('date');
   const searchInput = document.getElementById('search-input');
@@ -23,15 +29,88 @@ document.addEventListener('DOMContentLoaded', async () => {
   const addNavBtn = document.getElementById('add-nav-btn');
   const navListEl = document.getElementById('nav-list');
   const navGridEl = document.getElementById('nav-grid');
+  // 导出导入
+  const exportBtn = document.getElementById('export-btn');
+  const importBtn = document.getElementById('import-btn');
+  const importFileInput = document.getElementById('import-file-input');
+  const exportImportStatus = document.getElementById('export-import-status');
+  // 搜索引擎
+  const searchEngineSelector = document.getElementById('search-engine-selector');
+  const searchEngineMenu = document.getElementById('search-engine-menu');
+  const engineIcon = document.getElementById('engine-icon');
+  // 主题
+  const themeRadios = document.querySelectorAll('input[name="theme"]');
 
-  // 初始化语录管理器
+  console.log('[SoulNav] DOM 元素检查:');
+  console.log('  - searchEngineSelector:', searchEngineSelector);
+  console.log('  - searchEngineMenu:', searchEngineMenu);
+  console.log('  - engineIcon:', engineIcon);
+
+  // ===== 搜索引擎事件绑定（使用事件委托）=====
+  document.addEventListener('click', (e) => {
+    console.log('[Document] 点击事件:', e.target);
+
+    // 点击搜索引擎选择按钮
+    const selector = e.target.closest('#search-engine-selector');
+    if (selector) {
+      console.log('[SearchEngine] 点击了选择按钮');
+      e.stopPropagation();
+      searchEngineMenu.classList.toggle('hidden');
+      const isHidden = searchEngineMenu.classList.contains('hidden');
+      console.log('[SearchEngine] 菜单 hidden 状态:', isHidden);
+      console.log('[SearchEngine] 菜单 display:', getComputedStyle(searchEngineMenu).display);
+      console.log('[SearchEngine] 菜单 visibility:', getComputedStyle(searchEngineMenu).visibility);
+      console.log('[SearchEngine] 菜单 z-index:', getComputedStyle(searchEngineMenu).zIndex);
+      console.log('[SearchEngine] 菜单位置:', searchEngineMenu.getBoundingClientRect());
+      return;
+    }
+
+    // 点击搜索引擎选项
+    const option = e.target.closest('.engine-option');
+    if (option && searchEngineMenu.contains(e.target)) {
+      console.log('[SearchEngine] 点击了选项:', option.dataset.engine);
+      const engine = option.dataset.engine;
+      localStorage.setItem(SEARCH_ENGINE_KEY, engine);
+      engineIcon.textContent = engineIcons[engine];
+      searchEngineMenu.classList.add('hidden');
+      return;
+    }
+
+    // 点击其他地方关闭菜单
+    if (!searchEngineMenu.contains(e.target)) {
+      searchEngineMenu.classList.add('hidden');
+    }
+  });
+
+  // ===== 变量声明 =====
+  let navLinks = [];
+
+  // 搜索引擎图标映射
+  const engineIcons = {
+    bing: 'B',
+    google: 'G',
+    duckduckgo: 'D',
+    baidu: '百',
+    yandex: 'Y'
+  };
+
+  // ===== 初始化语录管理器 =====
   const soulQuotes = new SoulQuotes();
   const initResult = await soulQuotes.init();
 
   console.log(`[SoulNav] 已加载 ${initResult.count} 条语录 (${initResult.source})`);
 
-  // 显示第一条语录
-  showNewQuote();
+  // ===== 函数定义 =====
+
+  // 显示新语录（顺序轮播）
+  function showNewQuote() {
+    const quote = soulQuotes.getNextQuote();
+    quoteTextEl.style.opacity = '0';
+    setTimeout(() => {
+      quoteTextEl.textContent = quote;
+      quoteTextEl.style.opacity = '1';
+    }, 200);
+  }
 
   // 更新时间
   function updateTime() {
@@ -49,44 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     dateEl.textContent = `${year}/${month}/${day} ${weekDay}`;
   }
 
-  updateTime();
-  setInterval(updateTime, 1000);
-
-  // 显示新语录（顺序轮播）
-  function showNewQuote() {
-    const quote = soulQuotes.getNextQuote();
-    quoteTextEl.style.opacity = '0';
-    setTimeout(() => {
-      quoteTextEl.textContent = quote;
-      quoteTextEl.style.opacity = '1';
-    }, 200);
-  }
-
-  // 点击语录切换
-  quoteEl.addEventListener('click', showNewQuote);
-
-  // 每5秒自动轮播
-  setInterval(showNewQuote, 5000);
-
-  // 搜索功能
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      const query = searchInput.value.trim();
-      if (query) {
-        const urlPattern = /^(https?:\/\/)?([\w.-]+)([\/\w.-]*)\/?$/;
-        const isUrl = urlPattern.test(query) || (query.includes('.') && !query.includes(' '));
-
-        if (isUrl && (query.startsWith('http') || query.includes('.'))) {
-          const url = query.startsWith('http') ? query : `https://${query}`;
-          window.location.href = url;
-        } else {
-          const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
-          window.location.href = searchUrl;
-        }
-      }
-    }
-  });
-
   // 设置面板控制
   function openSettings() {
     settingsPanel.classList.add('open');
@@ -96,6 +137,181 @@ document.addEventListener('DOMContentLoaded', async () => {
   function closeSettings() {
     settingsPanel.classList.remove('open');
   }
+
+  // 背景图片管理
+  function loadBackground() {
+    const currentTheme = localStorage.getItem(THEME_KEY) || 'dark';
+    if (currentTheme === 'custom') {
+      const bgData = localStorage.getItem(BG_KEY);
+      if (bgData) {
+        document.getElementById('bg-layer').style.backgroundImage = `url(${bgData})`;
+        document.getElementById('bg-layer').classList.add('has-image');
+      }
+    }
+  }
+
+  // 自定义导航管理
+  function getDefaultNavLinks() {
+    return [
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: '知乎', url: 'https://zhihu.com' },
+      { name: 'B站', url: 'https://bilibili.com' }
+    ];
+  }
+
+  function loadNavLinks() {
+    try {
+      const stored = localStorage.getItem(NAV_KEY);
+      navLinks = stored ? JSON.parse(stored) : getDefaultNavLinks();
+    } catch {
+      navLinks = getDefaultNavLinks();
+    }
+    renderNavGrid();
+    renderNavList();
+  }
+
+  function saveNavLinks() {
+    localStorage.setItem(NAV_KEY, JSON.stringify(navLinks));
+  }
+
+  function renderNavGrid() {
+    if (!navGridEl) return;
+
+    navGridEl.innerHTML = navLinks.map((link, index) => {
+      const domain = new URL(link.url).hostname;
+      return `
+      <a href="${link.url}" class="nav-item" title="${link.name}" data-index="${index}" target="_blank" rel="noopener noreferrer">
+        <img class="favicon" src="https://favicon.im/${domain}" alt="" loading="lazy">
+        <span>${link.name}</span>
+      </a>
+    `}).join('');
+
+    // 为图标添加错误处理
+    navGridEl.querySelectorAll('.favicon').forEach(img => {
+      img.addEventListener('error', function() {
+        this.style.display = 'none';
+      }, { once: true });
+    });
+  }
+
+  function renderNavList() {
+    if (!navListEl) return;
+
+    if (navLinks.length === 0) {
+      navListEl.innerHTML = '<p class="empty">暂无导航链接</p>';
+      return;
+    }
+
+    navListEl.innerHTML = navLinks.map((link, index) => `
+      <div class="nav-list-item">
+        <span class="nav-name">${link.name}</span>
+        <button class="btn-icon" data-index="${index}" title="删除">&times;</button>
+      </div>
+    `).join('');
+
+    // 绑定删除事件
+    navListEl.querySelectorAll('.btn-icon').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const index = parseInt(e.target.dataset.index);
+        navLinks.splice(index, 1);
+        saveNavLinks();
+        renderNavList();
+        renderNavGrid();
+      });
+    });
+  }
+
+  // 搜索引擎
+  function loadSearchEngine() {
+    const savedEngine = localStorage.getItem(SEARCH_ENGINE_KEY) || 'bing';
+    if (engineIcon) {
+      engineIcon.textContent = engineIcons[savedEngine];
+    }
+  }
+
+  // 获取当前搜索引擎的搜索 URL
+  function getSearchUrl(query) {
+    const engine = localStorage.getItem(SEARCH_ENGINE_KEY) || 'bing';
+    const encodedQuery = encodeURIComponent(query);
+
+    switch (engine) {
+      case 'google':
+        return `https://www.google.com/search?q=${encodedQuery}`;
+      case 'duckduckgo':
+        return `https://duckduckgo.com/?q=${encodedQuery}`;
+      case 'baidu':
+        return `https://www.baidu.com/s?wd=${encodedQuery}`;
+      case 'yandex':
+        return `https://yandex.com/search/?text=${encodedQuery}`;
+      case 'bing':
+      default:
+        return `https://www.bing.com/search?q=${encodedQuery}`;
+    }
+  }
+
+  // 主题设置
+  function applyTheme(theme) {
+    document.body.classList.remove('custom-bg');
+    document.documentElement.removeAttribute('data-theme');
+
+    if (theme === 'custom') {
+      document.body.classList.add('custom-bg');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    const bgLayer = document.getElementById('bg-layer');
+    const customOptions = document.getElementById('theme-custom-options');
+
+    if (!customOptions) return;
+
+    // 显示/隐藏自定义背景选项
+    if (theme === 'custom') {
+      customOptions.classList.remove('hidden');
+      // 如果有背景图片则显示
+      const bgData = localStorage.getItem(BG_KEY);
+      if (bgData) {
+        bgLayer.style.backgroundImage = `url(${bgData})`;
+        bgLayer.classList.add('has-image');
+      }
+    } else {
+      customOptions.classList.add('hidden');
+      // 非自定义主题时隐藏背景图片
+      bgLayer.style.backgroundImage = '';
+      bgLayer.classList.remove('has-image');
+      document.body.style.background = 'var(--bg-gradient)';
+    }
+  }
+
+  function loadTheme() {
+    const savedTheme = localStorage.getItem(THEME_KEY);
+
+    if (savedTheme) {
+      applyTheme(savedTheme);
+      themeRadios.forEach(radio => {
+        if (radio.value === savedTheme) {
+          radio.checked = true;
+        }
+      });
+    } else {
+      applyTheme('dark');
+    }
+  }
+
+  // ===== 初始化 =====
+
+  // 显示第一条语录
+  showNewQuote();
+
+  // 更新时间
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // 点击语录切换
+  quoteEl.addEventListener('click', showNewQuote);
+
+  // 每5秒自动轮播
+  setInterval(showNewQuote, 5000);
 
   // 设置按钮切换侧栏
   settingsBtn.addEventListener('click', (e) => {
@@ -141,21 +357,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       soulStatus.style.color = '#f85149';
     }
 
-    // 重置文件输入
     soulFileInput.value = '';
   });
 
-  // 背景图片管理
-  const BG_KEY = 'soul-nav-bg';
-
-  function loadBackground() {
-    const bgData = localStorage.getItem(BG_KEY);
-    if (bgData) {
-      document.getElementById('bg-layer').style.backgroundImage = `url(${bgData})`;
-      document.getElementById('bg-layer').classList.add('has-image');
-    }
-  }
-
+  // 背景图片
   loadBackground();
 
   loadBgBtn.addEventListener('click', () => bgFileInput.click());
@@ -174,8 +379,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     reader.onload = (event) => {
       const dataUrl = event.target.result;
       localStorage.setItem(BG_KEY, dataUrl);
-      document.getElementById('bg-layer').style.backgroundImage = `url(${dataUrl})`;
-      document.getElementById('bg-layer').classList.add('has-image');
+      // 自动切换到自定义背景主题
+      localStorage.setItem(THEME_KEY, 'custom');
+      themeRadios.forEach(radio => {
+        radio.checked = radio.value === 'custom';
+      });
+      applyTheme('custom');
       bgStatus.textContent = '✓ 背景已设置';
       bgStatus.style.color = '#58a6ff';
     };
@@ -197,11 +406,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // 导出/导入功能
-  const exportBtn = document.getElementById('export-btn');
-  const importBtn = document.getElementById('import-btn');
-  const importFileInput = document.getElementById('import-file-input');
-  const exportImportStatus = document.getElementById('export-import-status');
-
   exportBtn.addEventListener('click', () => {
     const data = {
       quotes: localStorage.getItem('soul-nav-quotes'),
@@ -255,150 +459,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     importFileInput.value = '';
   });
 
-  // 自定义导航管理
-  const NAV_KEY = 'soul-nav-links';
-  let navLinks = [];
-
-  function loadNavLinks() {
-    try {
-      const stored = localStorage.getItem(NAV_KEY);
-      navLinks = stored ? JSON.parse(stored) : getDefaultNavLinks();
-    } catch {
-      navLinks = getDefaultNavLinks();
-    }
-    renderNavGrid();
-  }
-
-  function getDefaultNavLinks() {
-    return [
-      { name: 'GitHub', url: 'https://github.com' },
-      { name: '知乎', url: 'https://zhihu.com' },
-      { name: 'B站', url: 'https://bilibili.com' }
-    ];
-  }
-
-  function saveNavLinks() {
-    localStorage.setItem(NAV_KEY, JSON.stringify(navLinks));
-  }
-
-  function renderNavGrid() {
-    if (!navGridEl) return;
-
-    // <img class="favicon" src="https://favicon.im/${domain}" alt="" loading="lazy">
-    navGridEl.innerHTML = navLinks.map((link, index) => {
-      const domain = new URL(link.url).hostname;
-      return `
-      <a href="${link.url}" class="nav-item" title="${link.name}" data-index="${index}" target="_blank" rel="noopener noreferrer">
-        <img class="favicon" src="https://favicon.im/${domain}" alt="" loading="lazy">
-        <span>${link.name}</span>
-      </a>
-    `}).join('');
-
-    // 为图标添加错误处理（CSP 兼容方式）
-    navGridEl.querySelectorAll('.favicon').forEach(img => {
-      img.addEventListener('error', function() {
-        this.style.display = 'none';
-      }, { once: true });
-    });
-  }
-
-  function renderNavList() {
-    if (!navListEl) return;
-
-    if (navLinks.length === 0) {
-      navListEl.innerHTML = '<p class="empty">暂无导航链接</p>';
-      return;
-    }
-
-    navListEl.innerHTML = navLinks.map((link, index) => `
-      <div class="nav-list-item">
-        <span class="nav-name">${link.name}</span>
-        <button class="btn-icon" data-index="${index}" title="删除">&times;</button>
-      </div>
-    `).join('');
-
-    // 绑定删除事件
-    navListEl.querySelectorAll('.btn-icon').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const index = parseInt(e.target.dataset.index);
-        navLinks.splice(index, 1);
-        saveNavLinks();
-        renderNavList();
-        renderNavGrid();
-      });
-    });
-  }
-
   // 初始化导航
   loadNavLinks();
 
-  // ===== 搜索引擎设置 =====
-  const SEARCH_ENGINE_KEY = 'soul-nav-search-engine';
-  const searchEngineRadios = document.querySelectorAll('input[name="search-engine"]');
+  // 搜索引擎设置
+  loadSearchEngine();
 
-  // 加载保存的搜索引擎设置
-  const savedSearchEngine = localStorage.getItem(SEARCH_ENGINE_KEY) || 'bing';
-  searchEngineRadios.forEach(radio => {
-    if (radio.value === savedSearchEngine) {
-      radio.checked = true;
-    }
-  });
-
-  // 监听搜索引擎切换
-  searchEngineRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      localStorage.setItem(SEARCH_ENGINE_KEY, e.target.value);
-    });
-  });
-
-  // 获取当前搜索引擎的搜索 URL
-  function getSearchUrl(query) {
-    const engine = localStorage.getItem(SEARCH_ENGINE_KEY) || 'bing';
-    const encodedQuery = encodeURIComponent(query);
-
-    switch (engine) {
-      case 'google':
-        return `https://www.google.com/search?q=${encodedQuery}`;
-      case 'duckduckgo':
-        return `https://duckduckgo.com/?q=${encodedQuery}`;
-      case 'bing':
-      default:
-        return `https://www.bing.com/search?q=${encodedQuery}`;
-    }
-  }
-
-  // ===== 主题设置 =====
-  const THEME_KEY = 'soul-nav-theme';
-  const themeRadios = document.querySelectorAll('input[name="theme"]');
-
-  // 应用主题
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-
-    // 根据主题设置更新 body 背景
-    if (theme === 'light') {
-      document.body.style.background = 'var(--bg-gradient)';
-    } else if (theme === 'dark') {
-      document.body.style.background = 'var(--bg-gradient)';
-    }
-  }
-
-  // 加载保存的主题设置
-  function loadTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY);
-
-    if (savedTheme) {
-      applyTheme(savedTheme);
-      themeRadios.forEach(radio => {
-        if (radio.value === savedTheme) {
-          radio.checked = true;
-        }
-      });
-    } else {
-      // 默认使用 dark 主题
-      applyTheme('dark');
-    }
-  }
+  // 主题设置
+  loadTheme();
 
   // 监听主题切换
   themeRadios.forEach(radio => {
@@ -409,22 +477,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 初始化主题
-  loadTheme();
-
-  // ===== 搜索功能 =====
+  // 搜索功能
   searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       const query = searchInput.value.trim();
       if (query) {
-        const urlPattern = /^(https?:\/\/)?([\w.-]+)([\/\w.-]*)\/?$/;
+        const urlPattern = /^(https?:\/\/)?([\w.-]+)([\/*\w.-]*)\/?$/;
         const isUrl = urlPattern.test(query) || (query.includes('.') && !query.includes(' '));
 
         if (isUrl && (query.startsWith('http') || query.includes('.'))) {
           const url = query.startsWith('http') ? query : `https://${query}`;
           window.open(url, '_blank', 'noopener,noreferrer');
         } else {
-          // 使用用户选择的搜索引擎
           window.open(getSearchUrl(query), '_blank', 'noopener,noreferrer');
         }
       }
@@ -441,7 +505,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // 自动添加 https://
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'https://' + url;
     }
@@ -451,7 +514,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderNavList();
     renderNavGrid();
 
-    // 清空输入
     navNameInput.value = '';
     navUrlInput.value = '';
   });
@@ -473,25 +535,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // ===== 应用启动器交互 =====
+  // 应用启动器交互
   const appLauncherBtn = document.getElementById('app-launcher-btn');
   const appLauncherMenu = document.getElementById('app-launcher-menu');
 
   if (appLauncherBtn && appLauncherMenu) {
-    // 点击按钮切换菜单显示
     appLauncherBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       appLauncherMenu.classList.toggle('active');
     });
 
-    // 点击其他地方关闭菜单
     document.addEventListener('click', (e) => {
       if (!appLauncherMenu.contains(e.target) && e.target !== appLauncherBtn) {
         appLauncherMenu.classList.remove('active');
       }
     });
 
-    // 按下 Escape 键关闭菜单
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         appLauncherMenu.classList.remove('active');

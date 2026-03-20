@@ -78,6 +78,9 @@ function renderDailyList() {
                 <div class="habit-streak">${streak > 0 ? streak + ' Day Streak' : '–'}</div>
                 <div style="font-size:10px;color:var(--text-3);margin-top:2px;letter-spacing:0.05em;">STREAK</div>
             </div>
+            <button class="delete-btn" data-delete="${h.id}" title="删除习惯">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </button>
         </div>`;
     }).join('');
 }
@@ -106,6 +109,9 @@ function renderWeeklyList() {
                 <div style="font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:0.05em;">LAST 4 WEEKS</div>
             </div>
             <div class="habit-badge ${cls}">${label}</div>
+            <button class="delete-btn" data-delete="${h.id}" title="删除习惯">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </button>
         </div>`;
     }).join('');
 }
@@ -129,6 +135,9 @@ function renderIntervalList() {
                 <div class="week-progress"><div class="week-progress-fill" style="width:${pct}%;background:${due ? 'var(--done-bg)' : 'var(--accent-mid)'}"></div></div>
             </div>
             <div class="habit-badge ${cls}">${label}</div>
+            <button class="delete-btn" data-delete="${h.id}" title="删除习惯">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </button>
         </div>`;
     }).join('');
 }
@@ -154,6 +163,9 @@ function renderYearlyList() {
                     <div class="habit-meta">${h.targetMonth ? '目标：' + months[h.targetMonth - 1] : '全年'} · 已完成 ${(h.yearCompletions || []).length} 年</div>
                 </div>
                 <div class="habit-badge ${done ? 'badge-done' : 'badge-due'}">${done ? '已完成' : '待完成'}</div>
+                <button class="delete-btn" data-delete="${h.id}" title="删除习惯">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                </button>
             </div>
             <div class="yearly-months" data-hid="${h.id}">${dots}</div>
         </div>`;
@@ -180,6 +192,17 @@ function toggleYearly(id) {
     if (!h.yearCompletions) h.yearCompletions = []; const i = h.yearCompletions.indexOf(yr);
     if (i >= 0) { h.yearCompletions.splice(i, 1); showToast('取消：' + h.name); } else { h.yearCompletions.push(yr); showToast('✓ 年度目标完成：' + h.name + ' 🎊'); }
     save(); render();
+}
+
+function deleteHabit(id) {
+    const h = habits.find(x => x.id === id);
+    if (!h) return;
+    if (confirm(`确定要删除习惯「${h.name}」吗？此操作不可撤销。`)) {
+        habits = habits.filter(x => x.id !== id);
+        save();
+        showToast('已删除：' + h.name);
+        render();
+    }
 }
 
 function setFreq(freq, btn) {
@@ -321,6 +344,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const dot = e.target.closest('.month-dot');
         if (!dot || !dot.dataset.hid) return;
         toggleYearly(dot.dataset.hid);
+    });
+
+    // Delete buttons
+    document.addEventListener('click', function(e) {
+        const deleteBtn = e.target.closest('.delete-btn');
+        if (!deleteBtn) return;
+        e.stopPropagation();
+        const id = deleteBtn.dataset.delete;
+        if (id) deleteHabit(id);
     });
 
     render();

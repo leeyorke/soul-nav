@@ -33,33 +33,6 @@
       <p class="status" id="soul-status"></p>
     </div>
 
-    <div class="settings-section">
-      <h4>自定义背景</h4>
-      <p class="hint">选择背景图片</p>
-      <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
-      <button class="btn" id="load-bg-btn">设置背景</button>
-      <button class="btn btn-secondary" id="clear-bg-btn">清除背景</button>
-      <p class="status" id="bg-status"></p>
-    </div>
-
-    <div class="settings-section">
-      <h4>搜索引擎</h4>
-      <p class="hint">选择默认搜索引擎</p>
-      <div class="search-engine-options">
-        <label class="radio-label">
-          <input type="radio" name="search-engine" value="bing" checked>
-          <span>Bing</span>
-        </label>
-        <label class="radio-label">
-          <input type="radio" name="search-engine" value="google">
-          <span>Google</span>
-        </label>
-        <label class="radio-label">
-          <input type="radio" name="search-engine" value="duckduckgo">
-          <span>DuckDuckGo</span>
-        </label>
-      </div>
-    </div>
 
     <div class="settings-section">
       <h4>主题</h4>
@@ -73,6 +46,16 @@
           <input type="radio" name="theme" value="light">
           <span>浅色</span>
         </label>
+        <label class="radio-label">
+          <input type="radio" name="theme" value="custom">
+          <span>自定义背景</span>
+        </label>
+      </div>
+      <div class="theme-custom-options hidden" id="theme-custom-options">
+        <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
+        <button class="btn" id="load-bg-btn">选择图片</button>
+        <button class="btn btn-secondary" id="clear-bg-btn">清除背景</button>
+        <p class="status" id="bg-status"></p>
       </div>
     </div>
 
@@ -105,11 +88,36 @@
 
     <div class="search-section">
       <div class="search-box">
+        <button class="search-engine-selector" id="search-engine-selector" title="选择搜索引擎">
+          <span class="engine-icon" id="engine-icon">B</span>
+        </button>
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/>
           <path d="m21 21-4.35-4.35"/>
         </svg>
         <input type="text" id="search-input" placeholder="搜索或输入网址..." autofocus>
+      </div>
+      <div class="search-engine-menu hidden" id="search-engine-menu">
+        <button class="engine-option" data-engine="bing">
+          <span class="engine-icon">B</span>
+          <span>Bing</span>
+        </button>
+        <button class="engine-option" data-engine="google">
+          <span class="engine-icon">G</span>
+          <span>Google</span>
+        </button>
+        <button class="engine-option" data-engine="duckduckgo">
+          <span class="engine-icon">D</span>
+          <span>DuckDuckGo</span>
+        </button>
+        <button class="engine-option" data-engine="baidu">
+          <span class="engine-icon">百</span>
+          <span>百度</span>
+        </button>
+        <button class="engine-option" data-engine="yandex">
+          <span class="engine-icon">Y</span>
+          <span>Yandex</span>
+        </button>
       </div>
     </div>
 

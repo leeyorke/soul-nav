@@ -74,7 +74,13 @@ body {
 
 /* 搜索区域 */
 .search-section {
+  position: relative;
   margin-bottom: 64px;
+  overflow: visible;
+}
+
+.search-section * {
+  overflow: visible;
 }
 
 .search-box {
@@ -84,9 +90,43 @@ body {
   margin: 0 auto;
 }
 
+.search-engine-selector {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.search-engine-selector:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.engine-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
 .search-icon {
   position: absolute;
-  left: 20px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
   width: 20px;
@@ -98,17 +138,72 @@ body {
 
 #search-input {
   width: 100%;
-  padding: 18px 24px 18px 56px;
+  padding: 18px 56px 18px 52px;
   font-size: 16px;
   color: var(--text-primary);
   background: var(--search-bg);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
   transition: all 0.3s ease;
   outline: none;
+}
+
+.search-engine-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #ffffff !important;
+  border: 2px solid #58a6ff !important;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  z-index: 10000;
+  min-width: 180px;
+  display: block;
+}
+
+.search-engine-menu .engine-option {
+  color: #1f2328 !important;
+}
+
+.search-engine-menu .engine-option:hover {
+  background: rgba(88, 166, 255, 0.1) !important;
+}
+
+.search-engine-menu .engine-option .engine-icon {
+  background: rgba(88, 166, 255, 0.1) !important;
+  color: #0969da !important;
+}
+
+.search-engine-menu.hidden {
+  display: none;
+}
+
+.engine-option {
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.engine-option:hover {
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.engine-option .engine-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(88, 166, 255, 0.1);
 }
 
 #search-input::placeholder {
@@ -197,6 +292,7 @@ body {
   cursor: pointer;
   padding: 20px 30px;
   border-radius: 12px;
+  background: rgba(177, 177, 180, 0.5);
   transition: background 0.3s ease;
 }
 
@@ -280,8 +376,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(13, 17, 23, 0.7);
-  backdrop-filter: blur(2px);
+  background: rgba(13, 17, 23, 0);
 }
 
 /* 设置按钮 */
@@ -292,21 +387,20 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: var(--search-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid transparent;
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  backdrop-filter: blur(8px);
   z-index: 100;
 }
 
 .settings-btn:hover {
-  background: rgba(88, 166, 255, 0.1);
-  border-color: var(--accent-color);
+  background: var(--search-bg);
+  border-color: var(--border-color);
   color: var(--accent-color);
 }
 
@@ -323,9 +417,7 @@ body {
   width: 400px;
   max-width: 90vw;
   height: 100vh;
-  background: rgba(30, 30, 30, 0.85);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  background: rgba(22, 27, 34, 0.95);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
   z-index: 200;
@@ -405,6 +497,10 @@ body {
   background: linear-gradient(180deg, #007aff 0%, #0066cc 100%);
   border-color: rgba(0, 122, 255, 0.4);
   color: #fff;
+}
+
+[data-theme="light"] .soul-quote {
+  background: rgba(177, 177, 180, 0.5);
 }
 
 [data-theme="light"] .btn-primary:hover {
@@ -522,7 +618,6 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
 }
 
 .close-btn:hover {
@@ -611,7 +706,6 @@ input[type="file"]::file-selector-button:hover {
   transition: all 0.15s ease;
   margin-right: 8px;
   margin-bottom: 8px;
-  backdrop-filter: blur(20px);
   box-shadow: 0 1px 2px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
@@ -769,6 +863,113 @@ input[type="file"]::file-selector-button:hover {
   background: linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
   border-color: rgba(10, 132, 255, 0.5);
   box-shadow: 0 2px 8px rgba(10, 132, 255, 0.3);
+}
+
+.theme-custom-options {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-custom-options.hidden {
+  display: none;
+}
+
+/* 自定义背景时的样式 */
+body.custom-bg {
+  background: transparent;
+}
+
+body.custom-bg .time {
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: #ffffff;
+  background-clip: initial;
+  color: #ffffff;
+}
+
+body.custom-bg .date {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.custom-bg #search-input {
+  color: #1f2328;
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+body.custom-bg #search-input::placeholder {
+  color: #8c959f;
+}
+
+body.custom-bg .search-icon {
+  color: #8c959f;
+}
+
+body.custom-bg .engine-icon {
+  color: #0969da;
+}
+
+body.custom-bg .search-engine-selector:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.custom-bg .search-engine-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.custom-bg .engine-option {
+  color: #1f2328;
+}
+
+body.custom-bg .engine-option:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.custom-bg .engine-option .engine-icon {
+  background: rgba(9, 105, 218, 0.1);
+}
+
+body.custom-bg .nav-item {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.custom-bg .nav-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+body.custom-bg .quote-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.custom-bg .soul-quote {
+  background: rgba(177, 177, 180, 0.5);
+}
+
+body.custom-bg .soul-quote:hover {
+  background: rgba(177, 177, 180, 0.6);
+}
+
+body.custom-bg .settings-btn {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.custom-bg .settings-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+body.custom-bg .app-launcher-btn {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.custom-bg .app-launcher-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 /* 空状态 */
@@ -1008,24 +1209,22 @@ input[type="text"]:focus {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: var(--search-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid transparent;
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .app-launcher-btn:hover {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-  color: #fff;
+  background: var(--search-bg);
+  border-color: var(--border-color);
+  color: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(88, 166, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .app-launcher-btn svg {
@@ -1046,7 +1245,6 @@ input[type="text"]:focus {
   visibility: hidden;
   transform: translateY(10px);
   transition: all 0.2s ease;
-  backdrop-filter: blur(16px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
