@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const timeEl = document.getElementById('time');
   const dateEl = document.getElementById('date');
   const searchInput = document.getElementById('search-input');
+  const searchIconBtn = document.getElementById('search-icon-btn');
   const quoteEl = document.getElementById('soul-quote');
   const quoteTextEl = quoteEl.querySelector('.quote-text');
   // 设置面板元素
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('[SearchEngine] 点击了选项:', option.dataset.engine);
       const engine = option.dataset.engine;
       localStorage.setItem(SEARCH_ENGINE_KEY, engine);
-      engineIcon.textContent = engineIcons[engine];
+      engineIcon.src = `https://favicon.im/${engineDomains[engine]}`;
       searchEngineMenu.classList.add('hidden');
       return;
     }
@@ -85,13 +86,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ===== 变量声明 =====
   let navLinks = [];
 
-  // 搜索引擎图标映射
-  const engineIcons = {
-    bing: 'B',
-    google: 'G',
-    duckduckgo: 'D',
-    baidu: '百',
-    yandex: 'Y'
+  // 搜索引擎域名映射
+  const engineDomains = {
+    bing: 'bing.com',
+    google: 'google.com',
+    duckduckgo: 'duckduckgo.com',
+    baidu: 'baidu.com',
+    yandex: 'yandex.com'
   };
 
   // ===== 初始化语录管理器 =====
@@ -225,8 +226,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   function loadSearchEngine() {
     const savedEngine = localStorage.getItem(SEARCH_ENGINE_KEY) || 'bing';
     if (engineIcon) {
-      engineIcon.textContent = engineIcons[savedEngine];
+      engineIcon.src = `https://favicon.im/${engineDomains[savedEngine]}`;
     }
+    // 初始化菜单中的图标
+    const menuOptions = searchEngineMenu.querySelectorAll('.engine-option');
+    menuOptions.forEach(option => {
+      const engine = option.dataset.engine;
+      const img = option.querySelector('.engine-icon');
+      if (img) {
+        img.src = `https://favicon.im/${engineDomains[engine]}`;
+      }
+    });
   }
 
   // 获取当前搜索引擎的搜索 URL
@@ -477,22 +487,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 搜索功能
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      const query = searchInput.value.trim();
-      if (query) {
-        const urlPattern = /^(https?:\/\/)?([\w.-]+)([\/*\w.-]*)\/?$/;
-        const isUrl = urlPattern.test(query) || (query.includes('.') && !query.includes(' '));
+  // 执行搜索
+  function executeSearch() {
+    const query = searchInput.value.trim();
+    if (query) {
+      const urlPattern = /^(https?:\/\/)?([\w.-]+)([\/*\w.-]*)\/?$/;
+      const isUrl = urlPattern.test(query) || (query.includes('.') && !query.includes(' '));
 
-        if (isUrl && (query.startsWith('http') || query.includes('.'))) {
-          const url = query.startsWith('http') ? query : `https://${query}`;
-          window.open(url, '_blank', 'noopener,noreferrer');
-        } else {
-          window.open(getSearchUrl(query), '_blank', 'noopener,noreferrer');
-        }
+      if (isUrl && (query.startsWith('http') || query.includes('.'))) {
+        const url = query.startsWith('http') ? query : `https://${query}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        window.open(getSearchUrl(query), '_blank', 'noopener,noreferrer');
       }
     }
+  }
+
+  // 搜索功能 - 回车键
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      executeSearch();
+    }
+  });
+
+  // 搜索功能 - 点击搜索图标
+  searchIconBtn.addEventListener('click', () => {
+    executeSearch();
   });
 
   // 添加导航链接
