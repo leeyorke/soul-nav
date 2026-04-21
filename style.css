@@ -292,12 +292,18 @@ body {
   width: 72px;
   padding: 12px 8px;
   background: transparent;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 12px;
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 12px;
   transition: all 0.2s ease;
+  cursor: grab;
+  user-select: none;
+}
+
+.nav-item:active {
+  cursor: grabbing;
 }
 
 .nav-item:hover {
@@ -1048,6 +1054,7 @@ body.custom-bg .app-launcher-btn:hover {
 
   .nav-item {
     width: 56px;
+    padding: 10px 6px;
   }
 }
 

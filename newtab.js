@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     navGridEl.innerHTML = navLinks.map((link, index) => {
       const domain = new URL(link.url).hostname;
       return `
-      <a href="${link.url}" class="nav-item" title="${link.name}" data-index="${index}" target="_blank" rel="noopener noreferrer">
+      <a href="${link.url}" class="nav-item" title="${link.name}" draggable="true" data-index="${index}" target="_blank" rel="noopener noreferrer">
         <img class="favicon" src="https://favicon.im/${domain}" alt="" loading="lazy">
         <span>${link.name}</span>
       </a>
@@ -194,6 +194,70 @@ document.addEventListener('DOMContentLoaded', async () => {
       img.addEventListener('error', function() {
         this.style.display = 'none';
       }, { once: true });
+    });
+
+    // 拖拽排序功能
+    let draggedIndex = null;
+    const navItems = navGridEl.querySelectorAll('.nav-item');
+
+    navItems.forEach(item => {
+      // 开始拖拽
+      item.addEventListener('dragstart', (e) => {
+        draggedIndex = parseInt(item.dataset.index);
+        item.style.opacity = '0.5';
+        item.style.transform = 'scale(0.95)';
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      // 拖拽经过
+      item.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const overIndex = parseInt(item.dataset.index);
+        if (overIndex !== draggedIndex) {
+          item.style.border = '2px dashed var(--accent-color)';
+          item.style.background = 'var(--search-bg)';
+        }
+      });
+
+      // 拖拽离开
+      item.addEventListener('dragleave', () => {
+        item.style.border = '';
+        item.style.background = '';
+      });
+
+      // 放置
+      item.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const dropIndex = parseInt(item.dataset.index);
+
+        if (dropIndex !== draggedIndex) {
+          // 交换数组元素
+          const [draggedItem] = navLinks.splice(draggedIndex, 1);
+          navLinks.splice(dropIndex, 0, draggedItem);
+
+          // 保存到localStorage并重新渲染
+          localStorage.setItem(NAV_KEY, JSON.stringify(navLinks));
+          renderNavGrid();
+          renderNavList();
+        }
+
+        // 重置样式
+        item.style.border = '';
+        item.style.background = '';
+      });
+
+      // 拖拽结束
+      item.addEventListener('dragend', () => {
+        item.style.opacity = '';
+        item.style.transform = '';
+        draggedIndex = null;
+
+        // 重置所有项的样式
+        navItems.forEach(i => {
+          i.style.border = '';
+          i.style.background = '';
+        });
+      });
     });
   }
 
