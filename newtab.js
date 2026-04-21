@@ -557,15 +557,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function executeSearch() {
     const query = searchInput.value.trim();
     if (query) {
-      const urlPattern = /^(https?:\/\/)?([\w.-]+)([\/*\w.-]*)\/?$/;
-      const isUrl = urlPattern.test(query) || (query.includes('.') && !query.includes(' '));
-
-      if (isUrl && (query.startsWith('http') || query.includes('.'))) {
-        const url = query.startsWith('http') ? query : `https://${query}`;
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } else {
-        window.open(getSearchUrl(query), '_blank', 'noopener,noreferrer');
-      }
+      window.open(getSearchUrl(query), '_blank', 'noopener,noreferrer');
     }
   }
 
