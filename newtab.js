@@ -41,6 +41,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const engineIcon = document.getElementById('engine-icon');
   // 主题
   const themeRadios = document.querySelectorAll('input[name="theme"]');
+  // 导航区域
+  const navSectionEl = document.getElementById('nav-section');
 
   console.log('[SoulNav] DOM 元素检查:');
   console.log('  - searchEngineSelector:', searchEngineSelector);
@@ -575,6 +577,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (e.key === 'Escape') {
         appLauncherMenu.classList.remove('active');
       }
+    });
+  }
+
+  // 导航区域滚动条显示逻辑
+  let scrollTimer = null;
+  if (navSectionEl) {
+    navSectionEl.addEventListener('scroll', () => {
+      // 滚动时添加scrolling类显示滚动条
+      navSectionEl.classList.add('scrolling');
+
+      // 清除之前的定时器
+      if (scrollTimer) clearTimeout(scrollTimer);
+
+      // 滚动停止1秒后隐藏滚动条
+      scrollTimer = setTimeout(() => {
+        navSectionEl.classList.remove('scrolling');
+      }, 1000);
     });
   }
 
