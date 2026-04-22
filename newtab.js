@@ -636,22 +636,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 导航区域滚动条显示逻辑
-  let scrollTimer = null;
-  if (navSectionEl) {
-    navSectionEl.addEventListener('scroll', () => {
-      // 滚动时添加scrolling类显示滚动条
-      navSectionEl.classList.add('scrolling');
-
-      // 清除之前的定时器
-      if (scrollTimer) clearTimeout(scrollTimer);
-
-      // 滚动停止1秒后隐藏滚动条
-      scrollTimer = setTimeout(() => {
-        navSectionEl.classList.remove('scrolling');
-      }, 1000);
-    });
-  }
-
   console.log('[SoulNav] 初始化完成');
 });
