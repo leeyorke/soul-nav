@@ -4,7 +4,10 @@
 
 ## UI
 
-![首页](./assets/home.png)
+|浅色|深色|自定义壁纸|
+|--|--|--|
+|![首页](./assets/light.png)|![首页](./assets/dark.png)|![](./assets/custom.jpg)|
+
 
 ## 特性
 
