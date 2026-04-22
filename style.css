@@ -250,12 +250,12 @@ body {
   overflow-x: hidden;
   flex-shrink: 0;
   padding-right: 10px;
+  scrollbar-gutter: stable;
 }
 
 /* 导航区域滚动条样式 */
 .nav-section::-webkit-scrollbar {
   width: 6px;
-  background: transparent;
 }
 
 .nav-section::-webkit-scrollbar-track {
@@ -265,15 +265,15 @@ body {
 .nav-section::-webkit-scrollbar-thumb {
   background: transparent;
   border-radius: 3px;
-  transition: background 0.2s ease;
 }
 
-.nav-section:hover::-webkit-scrollbar-thumb {
+.nav-section.show-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
+  transition: background 0.15s ease;
 }
 
-.nav-section::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
+.nav-section.show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .nav-grid {
@@ -601,16 +601,12 @@ body {
 }
 
 /* 浅色主题下导航滚动条样式 */
-[data-theme="light"] .nav-section::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-
-[data-theme="light"] .nav-section:hover::-webkit-scrollbar-thumb {
+[data-theme="light"] .nav-section.show-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="light"] .nav-section::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3) !important;
+[data-theme="light"] .nav-section.show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="light"] .radio-label {

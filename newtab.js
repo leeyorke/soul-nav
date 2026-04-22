@@ -636,5 +636,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // 导航区域滚动条显示逻辑
+  if (navSectionEl) {
+    navSectionEl.addEventListener('mouseenter', () => {
+      navSectionEl.classList.add('show-scrollbar');
+    });
+
+    navSectionEl.addEventListener('mouseleave', () => {
+      navSectionEl.classList.remove('show-scrollbar');
+    });
+  }
+
   console.log('[SoulNav] 初始化完成');
 });
